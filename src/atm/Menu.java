@@ -10,6 +10,7 @@ public class Menu {
     static int count = 2;
     static Scanner scanner = new Scanner(System.in);
     static Client actualClient;
+
     static void startMenu() {
         System.out.println("Введите 1, чтобы создать счет");
         System.out.println("Введите 2, чтобы войти в аккаунт");
@@ -21,36 +22,34 @@ public class Menu {
         switch (chooseNumber()) {
             case 1:
                 DataBase.writeToDataBase(createAccount());
-                System.out.println("Аккаунт сохранён");
                 break;
             case 2:
-
                 actualClient = login();
                 if (actualClient != null) {
-                    if(actualClient.banAccount != 3){
-                        System.out.println("Здравствуйте " + actualClient.name);
+                    if (actualClient.banAccount != 3) {
+                        System.out.println("Здравствуйте " + actualClient.firstName);
                     } else if (actualClient.banAccount == 3) {
                         startMenu();
                     }
                 }
                 break;
             case 3:
-                if(actualClient.banAccount == 3){
+                if (actualClient.banAccount == 3) {
                     System.out.println("Ваш аккаунт заблокирован");
                     break;
                 }
                 addBalance();
-                System.out.println("Баланс пополнен");
+                System.out.println("Баланс пополнен"); //проверка на актуального клиента
                 break;
             case 4:
-                if(actualClient.banAccount == 3){
+                if (actualClient.banAccount == 3) {
                     System.out.println("Ваш аккаунт заблокирован");
                     break;
                 }
                 System.out.println("Баланс счета: " + showBalance());
                 break;
             case 5:
-                if(actualClient.banAccount == 3){
+                if (actualClient.banAccount == 3) {
                     System.out.println("Ваш аккаунт заблокирован");
                     break;
                 }
@@ -70,18 +69,27 @@ public class Menu {
     }
 
     static int chooseNumber() {
-        Scanner scanner = new Scanner(System.in);
-        int choose = scanner.nextInt();
-        return choose;
+        int n = 0;
+        try {
+            int choose = Integer.parseInt(scannerSrt());
+            n = choose;
+
+        } catch (Exception e) {
+            System.out.println("Неверное введено значение" + e);
+        }
+        return n;
     }
 
     static Client createAccount() {
-        System.out.println("Введите своё имя: ");
+        System.out.println("Введите логин: ");
         String name = scannerSrt();
         System.out.println("Введите пароль: ");
         String password = scannerSrt();
-        Client client = new Client(name, password, 0, (int) (Math.random() * 10000), 0);
-
+        System.out.println("Введите ваше имя: ");
+        String firstName = scannerSrt();
+        System.out.println("Введите вашу фамилию: ");
+        String lastName = scannerSrt();
+        Client client = new Client(name, password, 0, (int) (Math.random() * 10000), 0, firstName, lastName);
         return client;
     }
 
@@ -104,9 +112,8 @@ public class Menu {
         return actualClient.accountBalance;
     }
 
-    static String scannerSrt(){
-        String str = scanner.nextLine();
-        return str;
+    static String scannerSrt() {
+        return scanner.nextLine();
     }
 
     static void chooseNodes() {
@@ -367,7 +374,6 @@ public class Menu {
         }
 
     }
-//SOLID - посмотреть
 
     static Client login() {
 
