@@ -12,6 +12,7 @@ public class Menu {
     static Client actualClient;
 
     static void startMenu() {
+
         System.out.println("Введите 1, чтобы создать счет");
         System.out.println("Введите 2, чтобы войти в аккаунт");
         System.out.println("Введите 3, чтобы положить деньги на счет");
@@ -34,28 +35,46 @@ public class Menu {
                 }
                 break;
             case 3:
-                if (actualClient.banAccount == 3) {
-                    System.out.println("Ваш аккаунт заблокирован");
+                try {
+                    if (actualClient.banAccount == 3) {
+                        System.out.println("Ваш аккаунт заблокирован");
+                        break;
+                    }
+                    addBalance();
+                    System.out.println("Баланс пополнен"); //проверка на актуального клиента
                     break;
+                }catch (Exception e){
+                    System.out.println("Ошибка " + e);
+                    startMenu();
                 }
-                addBalance();
-                System.out.println("Баланс пополнен"); //проверка на актуального клиента
-                break;
+
             case 4:
-                if (actualClient.banAccount == 3) {
-                    System.out.println("Ваш аккаунт заблокирован");
+                try {
+                    if (actualClient.banAccount == 3) {
+                        System.out.println("Ваш аккаунт заблокирован");
+                        break;
+                    }
+                    System.out.println("Баланс счета: " + showBalance());
                     break;
+                } catch (Exception e){
+                    System.out.println("Ошибка " + e);
+                    startMenu();
                 }
-                System.out.println("Баланс счета: " + showBalance());
-                break;
+
             case 5:
-                if (actualClient.banAccount == 3) {
-                    System.out.println("Ваш аккаунт заблокирован");
+                try {
+                    if (actualClient.banAccount == 3) {
+                        System.out.println("Ваш аккаунт заблокирован");
+                        break;
+                    }
+                    System.out.println("Введите сумму для снятия денег со счёта: ");
+                    chooseNodes();
                     break;
+                }catch (Exception e){
+                    System.out.println("Ошибка " + e);
+                    startMenu();
                 }
-                System.out.println("Введите сумму для снятия денег со счёта: ");
-                chooseNodes();
-                break;
+
             case 6:
                 DataBase.printAllClients();
                 break;
@@ -98,7 +117,7 @@ public class Menu {
         while (true) {
 
             int accountBalance = Integer.parseInt(scannerSrt());
-            if (accountBalance < 0) {
+            if (accountBalance <= 0) {
                 System.out.println("Неверное значение, повторите попытку: ");
             } else {
                 actualClient.accountBalance += accountBalance;
@@ -118,6 +137,13 @@ public class Menu {
 
     static void chooseNodes() {
         int minusAccountBalance = Integer.parseInt(scannerSrt());
+
+        if(minusAccountBalance <= 0){
+            System.out.println("Неверно введена сумма");
+            chooseNodes();
+            return;
+        }
+
         if (actualClient.accountBalance == 0) {
             System.out.println("Нельзя снять деньги потому что баланс равен нулю, иди проспись");
             chooseNodes();
@@ -133,7 +159,7 @@ public class Menu {
                 System.out.println("4. Снять деньги по 50 рублей");
                 System.out.println("5. Снять деньги по 100 рублей");
                 System.out.println("6. Вернуться в меню");
-                int n = scanner.nextInt();
+                int n = Integer.parseInt(scannerSrt());
                 switch (n) {
                     case 1:
                         if (minusAccountBalance % 5 == 0 && minusAccountBalance % 10 == 0) {
